@@ -8,7 +8,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 var redis = require('socket.io-redis');
-io.adapter(redis({host: process.env.REDIS_HOST, port: process.env.REDIS_PORT}))
+io.adapter(redis({host: process.env.REDIS_HOST, port: process.env.REDIS_PORT, auth_pass: process.env.REDIS_PWD}))
 
 var client_count = 0;
 let client_pool = new Map();
