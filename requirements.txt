@@ -1,0 +1,6 @@
+yarn
+gcc-c++ 
+make
+postgresql
+postgresql-devel
+postgresql-server

@@ -2,11 +2,13 @@ const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
 const db = require('./queries.js');
-
+require('dotenv').config();
 const port = 3000;
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
+var redis = require('socket.io-redis');
+io.adapter(redis({host: process.env.REDIS_HOST, port: process.env.REDIS_PORT}))
 
 var client_count = 0;
 let client_pool = new Map();
