@@ -6,11 +6,11 @@ This repository is dedicated to the backend architecture of ```Agora``` which we
 
 # Overview
 
-At a glance, we our backend is implemented as following:
+At a glance, our backend is implemented as follows:
 
 ![architecture](/misc/architecture.png)
 
-or if you are more interested in our cloud architecure:
+or if you are more interested in our cloud architecture:
 
 ![cloud](/misc/cloud.png)
 
