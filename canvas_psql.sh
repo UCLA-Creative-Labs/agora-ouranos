@@ -16,25 +16,17 @@ sudo systemctl enable postgresql
 sudo -u postgres createuser --interactive -P
 
 # create a database called 'api': recommended becasue querires.js uses 'api' as database
-sudo -u postgres createdb api
+sudo -u postgres createdb canvas-db
  
 ###################################################
 #    Bash Shell script to execute psql command    # 
 ###################################################
  
 #Set the value of variable
-database="api"
+database="canvas-db"
 username="opc"
  
 #Execute few psql commands: 
 #Note: you can also add -h hostname -U username in the below commands.
 
-psql -d $database -h localhost -U $username -c "CREATE TABLE users (ID SERIAL PRIMARY KEY, name VARCHAR(30), email VARCHAR(30));"
-psql -d $database -h localhost -U $username -c "INSERT INTO users (name, email) VALUES ('Jerry', 'jerry@example.com'), ('George', 'george@example.com');"
-psql -d $database -h localhost -U $username -c "SELECT * FROM users"
- 
-#Assign table count to variable
-TableCount=$(psql -d $database -h localhost -U $username -t -c "select count(1) from users")
- 
-#Print the value of variable
-echo "Total table records count....:"$TableCount
+psql -d $database -h localhost -U $username -c "CREATE TABLE canvas-data (time_stamp TIMESTAMPTZ, data JSON);"

@@ -39,6 +39,14 @@ We have a script to download all the stuff you need.
 Install Dependencies, nvm, and open the firewall for port 3000:
 
     bash start.sh
+
+    # Sourcing the bash intializing script to export nvm to $PATH
+    source ~/.bashrc
+
+    # Switch to the correct node version
+    # Run node --version or npm --version to ensure its not 8.1
+    nvm install node
+    
 ```
 
 ### Breakdown
