@@ -13,12 +13,6 @@ sudo rpm --import https://dl.yarnpkg.com/rpm/pubkey.gpg
 # All our yum requirements are in the yum_requirements.txt 
 sudo yum install -y $(cat requirements.txt)
 
-# Installs to node modules 
-# express for node.js framework
-# postgres to easily interface with postgres server
-# nodemon to watch changes to your node.js applications and update them => now you dont need to consistently restart it manually
-yarn install
-
 # Opens up a port for the VCN
 # Now you can access the instance through the public IP address and the port 3000
 # i.e. http://129.146.239.245:3000/

@@ -46,7 +46,13 @@ Install Dependencies, nvm, and open the firewall for port 3000:
     # Switch to the correct node version
     # Run node --version or npm --version to ensure its not 8.1
     nvm install node
-    
+
+    # Installs to node modules 
+    # express for node.js framework
+    # postgres to easily interface with postgres server
+    # nodemon to watch changes to your node.js applications and update them => now you dont need to consistently restart it manually
+    yarn install
+
 ```
 
 ### Breakdown
