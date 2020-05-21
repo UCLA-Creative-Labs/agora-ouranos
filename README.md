@@ -32,7 +32,7 @@ or if you are more interested in our cloud architecture:
 
 # Getting Started
 
-Our backend is hoisted completely with [```Oracle Cloud Infrastructure```](https://www.oracle.com/cloud/). Through our process we weren't able to find the best documentation on how to implement infrastructure. Hopefully, the following guide will be able to help you run ```Ouranos``` locally or on ```Oracle Cloud Infrastructure```.
+Our backend is hoisted completely with [```Oracle Cloud Infrastructure```](https://www.oracle.com/cloud/). Through our process we weren't able to find the best documentation on how to implement our backend infrastructure. Hopefully, the following guide will be able to help you run ```Ouranos``` locally or on ```Oracle Cloud Infrastructure```.
 
 We utilize a ```.env``` file for security reasons and recommend you follow the same protocol. 
 
