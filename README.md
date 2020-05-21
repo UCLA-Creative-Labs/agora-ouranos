@@ -165,4 +165,152 @@ Congrats, you just spun up ```Ouranos``` locally!
 
 ## Oracle Cloud Infrastructure
 
+The following guide is to get you started with deploying a single app server instance. For a more indepth walkthrough on how to use [```Oracle Cloud Infrastructure```](https://www.oracle.com/cloud/) to create a horizontally scaled application, take a look at our [```wiki```](https://github.com/UCLA-Creative-Labs/agora-ouranos/wiki).
 
+Unfortunately, OCI instances come with empty images that have no installed tools in it. OCI base images are essentially CentOS and use RPM to download modules. Whenever you need to download things always use the command ```sudo yum install -y <name of package>```.
+
+### Installing Git and Obtaining this Repository
+
+```
+Install git:
+
+    sudo yum install -y git
+
+Clone the repository:
+
+    git clone https://github.com/UCLA-Creative-Labs/node-psql-rest.git
+
+```
+
+### Installing Dependencies and Requirements
+
+We have a script to download all the stuff you need.
+
+You will need to go to your ingress rules for your Pulbic Subnet and allow inbound communication through ports ```3000```, ```5432```, and ```6379```.
+
+#### Run
+
+```
+Install Dependencies, nvm, and open the firewall for port 3000:
+
+    bash start.sh
+
+    # Sourcing the bash intializing script to export nvm to $PATH	
+    source ~/.bashrc	
+
+    # Switch to the correct node version	
+    # Run node --version or npm --version to ensure its not 8.1	
+    nvm install node	
+
+    # Installs to node modules 	
+    # express   => node.js framework	
+    # postgres  => easily interface with postgres server	
+    # nodemon   => watch changes to your node.js applications and update them
+    # socket.io => connecting to client
+    yarn install
+
+If postgres is also on this instance, then run the following. 
+
+    sudo firewall-cmd --add-port=5432/tcp
+    sudo firewall-cmd --permanent --add-port=5432/tcp
+```
+
+#### Breakdown
+
+- update yum
+- download nvm (node version manager)
+    - use this to switch between node versions
+    - run ```nvm install <node version number>``` for a specific version
+    - run ```nvm use <node version number>``` to switch node version
+    - run ```node --version``` to check
+- download yarn
+- install requirements 
+- install node dependencies
+- allow port access to 3000
+
+Extensive documenation in ```start.sh```.
+
+### Initializing Postgres Database 
+
+We have a script to initialize a postgres server very quickly.
+
+#### Run
+
+```
+Initialize postgres database:
+
+    bash canvas_psql.sh
+```
+
+#### Breakdown
+
+- init postgres
+- start postgres
+- create a user (call it 'opc' or whatever you want to use in ```queries.js```)
+- create a database (call it 'api' or whatever you want to use in ```queries.js```)
+- set password for user (user currently is defaulted to ```opc``` with a default password of ```test``` in ```queries.js```)
+- create a table called ```users``` 
+- populate ```users``` table with our bois Jerry and George
+
+Extensive documenation in ```psql.sh```.
+
+### Changing Postgres Authentication Method
+
+Default authentication method is ```ident``` which requires an ident server to authenticate the user. Instead we switch to ```md5``` which is simply a hashed password authentication.
+
+#### Run the following code
+
+```
+First enter root user to access pqsl configuration file:
+
+    sudo -i
+    cd /var/lib/pgsql/data/
+    vim pg_hba.conf
+
+Replace the following with this:
+
+    # TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+    # "local" is for Unix domain socket connections only
+    #local  all             all                                     peer
+    host    all             all                                     md5
+    # IPv4 local connections:
+    #host   all             all             127.0.0.1/32            ident
+    host    all             all             127.0.0.1/32            md5
+    # IPv6 local connections:
+    #host   all             all             ::1/128                 ident
+    host    all             all             ::1/128                 md5
+
+Finally run this outside of root user:
+
+    psql -d <database_name> -c "SELECT pg_reload_conf();"
+
+If you edit the postgres.conf file then run this:
+
+    sudo systemctl restart postgresql
+
+```
+
+### Usage
+
+Time to get our app server working.
+
+The following documentation is to show you how to start up a server and prove that it works.
+
+```
+Start your node.js development server:
+
+    yarn start
+
+Check out the public IP address of your VM instance to see if app server is listening at port 3000:
+
+    http://pub.lic.ip.add:3000/
+
+You should see something like this:
+
+    Cannot /GET
+
+Since we are using sockets, it makes sense that there is no '/GET' at the base of http://pub.lic.ip.add:3000/.
+```
+
+Congrats, you just spun up ```Ouranos``` on the cloud!
