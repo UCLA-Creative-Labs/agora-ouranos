@@ -58,6 +58,10 @@ Add the following to your .env file:
 
 ## Local
 
+We recommend using some sort of cloud infrastructure to view the full power of horizontal scalability. However, if you just want to get started the following guide might be a good place to start to understand sockets and postgres. 
+
+** Note that in order to utilize ```Redis``` for multiple app servers, you will need a load balancer. See [below](#initialize-redis) for more details.
+
 ### Obtain the Repository and Install Dependencies
 ```
 Clone the repository:
@@ -119,7 +123,7 @@ Breakdown:
 
 ### Initialize Redis
 
-Only utilize this step if you want to use **multiple nodes** and have a method for **load balancing**!!!
+Only complete this step if you want to use **multiple nodes** and have a method for **load balancing**!!!
 
 To load balance locally, follow this [guide](https://blog.jscrambler.com/scaling-node-js-socket-server-with-nginx-and-redis/).
 
