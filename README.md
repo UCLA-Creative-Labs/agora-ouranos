@@ -1,15 +1,15 @@
 # Agora - Ouranos (Backend Implementation)
 
-In ancient Greek, the word ```agora``` means a public open space for gathering. In a day in age where COVID-19 has prohibited physical gatherings, we, at Creative Labs, have created a platform for individuals to gather around: ```Agora```. ```Agora``` is a collaborative canvas centered around community. We built it so that every individual can only contribute one stroke at a time with the hope that people would come together to build something amazing. 
+In ancient Greek, the word **```agora```** means a public open space for gathering. In a day in age where COVID-19 has prohibited physical gatherings, we, at Creative Labs, have created a platform for individuals to gather around: **```Agora```**. **```Agora```** is a collaborative canvas centered around community. We built it so that every individual can only contribute one stroke at a time with the hope that people would come together to build something amazing. 
 
-This repository is dedicated to the backend architecture of ```Agora``` which we dubbed after the sky titan **Ouranos**. Much like how the sky is an integral part of our lives that we all take for granted, our backend models a similar ideology. As the father of titans and the husband of Gaia (frontend), **Ouranos** was a fitting name to encompass the entirety of our backend.
+This repository is dedicated to the backend architecture of **```Agora```** which we dubbed after the sky titan **Ouranos**. Much like how the sky is an integral part of our lives that we all take for granted, our backend models a similar ideology. As the father of titans and the husband of Gaia (frontend), **Ouranos** was a fitting name to encompass the entirety of our backend.
 
 For extensive ***documentation*** and ***implementation***, checkout our [```wiki```](https://github.com/UCLA-Creative-Labs/agora-ouranos/wiki).
 
-To see how to deploy on ```Oracle Cloud Infrastructure```, checkout this [wiki page](https://github.com/UCLA-Creative-Labs/agora-ouranos/wiki/Deploying-to-Oracle-Cloud-Infrastructure)
+To see how to deploy on [```Oracle Cloud Infrastructure```](https://www.oracle.com/cloud/), checkout this [```wiki page```](https://github.com/UCLA-Creative-Labs/agora-ouranos/wiki/Deploying-to-Oracle-Cloud-Infrastructure)
 
 
-# Getting Started Locally
+# Getting Started - Locally
 
 Our backend is hoisted completely with [```Oracle Cloud Infrastructure```](https://www.oracle.com/cloud/). Through our process we weren't able to find the best documentation on how to implement our backend infrastructure. Hopefully, the following guide will be able to help you run ```Ouranos``` locally.
 
