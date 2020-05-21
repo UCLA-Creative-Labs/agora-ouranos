@@ -113,7 +113,6 @@ Install Redis:
 
     sudo systemctl status redis.service     // check the status for you redis service
     redis-cli ping                          // you should get the output 'PONG'
-
 ```
 
 ## Usage
