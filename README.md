@@ -1,201 +1,63 @@
-# PEN REST API
+# Agora - Ouranos (Backend Implementation)
 
-PEN stack to demo a REST API for web applications. REST API means ```REpresentational State Transfer``` and is an architectual style for designing web applications that require networking between client and application servers. A RESTful design allows for a separation between client and server and is visible, reliable and scalable. 
+In ancient Greek, the word ```agora``` means a public open space for gathering. In a day in age where COVID-19 has prohibited physical gatherings, we, at Creative Labs, have created a platform for individuals to gather around: ```Agora```. ```Agora``` is a collaborative canvas centered around community. We built it so that every individual can only contribute one stroke at a time with the hope that people would come together to build something amazing. 
 
-**Postgres**    -   Open-source relational database management system (RDBMS). https://www.postgresql.org/
+This repository is dedicated towards the backend architecture of ```Agora``` which we dubbed after the sky titan **Ouranos**. Much like how the sky is an integral part of our lives that we all take for granted, our backend models a similar ideology. As the father of titans and the husband of Gaia (frontend), **Ouranos** was a fitting name to encompass the entirety of our backend.
 
-**Express.js**  -   Web application framework for Node.js. https://expressjs.com/
+# Overview
 
-**Node.js**     -   Open-source, JavaScript runtime environment that executes code outside of a browser https://nodejs.org/en/
+At a glance, we our backend is implemented as following:
 
-We will take advantage of a module called ```node-postgres``` to have our ```node.js``` application easily interface with our Postgres server.
+![architecture](/misc/architecture.png)
 
-# Set Up
+or if you are more interested in our cloud architecure:
 
-Unfortunately, OCI instances come with empty images that have no installed tools in it. OCI base images are essentially CentOS and use RPM to download modules. Whenever you need to download things always use the command ```sudo yum install -y <name of package>```.
+![cloud](/misc/cloud.png)
 
-## Installing Git and Obtaining this Repository
+```WebSocket Protocol``` enables real-time event-driven communication between clients and servers. ```socket.io``` underpins the communication protocol throughout the entirety of ```Agora```.
 
-This git repo has the base template for quickly building up a 
+```Load Balancer``` **(Atlas)** allows us to coordinate distribution of clients to mulitple ```node.js``` servers through an IP Hash Policy. Enabled with a SSL connection, our listener, **Hermes**, listens for socket connections and emissions from clients at ```https://atlas.creativelabsucla.com/```.
 
-```
-Install git:
+```Application Servers``` developed via ```node.js``` and ```express.js``` to provide server side computation, optimization and redirecting. We have 3 instances running (**Prometheus**, **Hyperion**, **Chronos**) each with 1+ app servers listening for client connections redirected by **Atlas**.
 
-    sudo yum install -y git
+```Redis``` utilized to allow our mulitple app servers to communicate with each other as they get new strokes from the client. ```socket.io-redis``` provides really great utility for global communication between app servers through an integrated ```pub/sub`` protocol. 
 
-Clone the repository:
+```PostgreSQL``` our **Achilles** heel and integral part of our backend. We used ```PostgreSQL``` because of its [ACID](https://retool.com/blog/whats-an-acid-compliant-database/) properties. We table our data through two colummns: ```timestamp``` and ```JSON object```.
 
-    git clone https://github.com/UCLA-Creative-Labs/node-psql-rest.git
+# Architecture
 
-```
+We developed our backend with scalability in mind. We quickly came to the conclusion that a singular ```Node.js``` application server connected to a ```PostgreSQL``` database would not be sufficient to combat user load. Thus, we turned towards creating a more distributed system to handle greater amounts of user connections.
 
-## Installing Dependencies and Requirements
+## Communication Protocol (WebSocket)
 
-We have a script to download all the stuff you need.
+```Agora 0.5``` originally had a RESTful API implementation. We decided to pivot towards a WebSocket implementation to achieve real-time collaboration with other users. We used [```socket.io```](https://socket.io/docs/) as our library for client-to-server and server-to-client connections. Using web sockets, we are able to utilize a bidirectional, event-driven, real-time communication protocol between clients and server nodes for better functionality. 
 
-### Run
-
-```
-Install Dependencies, nvm, and open the firewall for port 3000:
-
-    bash start.sh
-
-    # Sourcing the bash intializing script to export nvm to $PATH
-    source ~/.bashrc
-
-    # Switch to the correct node version
-    # Run node --version or npm --version to ensure its not 8.1
-    nvm install node
-
-    # Installs to node modules 
-    # express for node.js framework
-    # postgres to easily interface with postgres server
-    # nodemon to watch changes to your node.js applications and update them => now you dont need to consistently restart it manually
-    yarn install
+### Implementation
 
 ```
-
-### Breakdown
-
-- update yum
-- download nvm (node version manager)
-    - use this to switch between node versions
-    - run ```nvm install <node version number>``` for a specific version
-    - run ```nvm use <node version number>``` to switch node version
-    - run ```node --version``` to check
-- download yarn
-- install requirements 
-- install node dependencies
-- allow port access to 3000
-
-Extensive documenation in ```start.sh```.
-
-## Initializing Postgres Database 
-
-We have a script to initialize a postgres server very quickly.
-
-### Run
-
-```
-Initialize postgres database:
-
-    bash psql.sh
+    Blah
 ```
 
-### Breakdown
+## Application Servers (Node.js + Express.js)
 
-- init postgres
-- start postgres
-- create a user (call it 'opc' or whatever you want to use in ```queries.js```)
-- create a database (call it 'api' or whatever you want to use in ```queries.js```)
-- set password for user (user currently is defaulted to ```opc``` with a default password of ```test``` in ```queries.js```)
-- create a table called ```users``` 
-- populate ```users``` table with our bois Jerry and George
-
-Extensive documenation in ```psql.sh```.
-
-## Changing Postgres Authentication Method
-
-Default authentication method is ```ident``` which requires an ident server to authenticate the user. Instead we switch to ```md5``` which is simply a hashed password authentication.
-
-### Run the following code
+### Implmentation
 
 ```
-First enter root user to access pqsl configuration file:
-
-    sudo -i
-    cd /var/lib/pgsql/data/
-    vim pg_hba.conf
-
-Replace the following with this:
-
-    # TYPE  DATABASE        USER            ADDRESS                 METHOD
-
-    # "local" is for Unix domain socket connections only
-    local   all             all                                     peer
-    # IPv4 local connections:
-    #host    all             all             127.0.0.1/32            ident
-    host    all             all             127.0.0.1/32            md5
-    # IPv6 local connections:
-    #host    all             all             ::1/128                 ident
-    host    all             all             ::1/128                 md5
-
-Finally run this outside of root user:
-
-    psql -d <database_name> -c "SELECT pg_reload_conf();"
-```
-# Usage
-
-Time to get this bad boi working. We have some base code here to show you how to navigate a RESTful API but the main benefits is to simply just download all the dependencies required to start.
-
-The following documentation is to show you how to start up a server and prove that it works.
-
-```
-Start your node.js development server:
-
-    npm start
-
-Go to your VM instance's public ip address at specificied port in ```start.sh```. (Default is 3000)
-
-    http://pub.lic.ip.add:3000/
-
-You should see something like this:
-
-    {
-        info: "Node.js, Express, and Postgres API"
-    }
-```
-```
-Now simulate a GET request, go to:
-
-    http://pub.lic.ip.add:3000/users
-
-You should see something like this:
-
-    [
-        {
-            "id": 1,
-            "name": "Jerry",
-            "email": "jerry@example.com"
-        },
-        {
-            "id": 2,
-            "name": "George",
-            "email": "george@example.com"
-        }
-    ]
-```
-Congrats! You know have a backend server!
-
-# Helpful Postgres Commands
-
-Some commands to help you navigate the postgres server.
-
-Link to cheatsheet: https://gist.github.com/Kartones/dd3ff5ec5ea238d4c546
-
-## Terminal Commands
-Some commands you can access in the terminal if bash is more of your cup of tea.
-
-```
-sudo -u postgres createuser --interactive       # Allows you to create a new user
-sudo -u postgres createdb api                   # Creates a database with your current user
-
-psql -d <name of database> -U <name of user>    # Allows you do start a psql connection to a database with specific user
-psql <database>                                 # Allows you to login with current user in config to <database>
-psql -d <name of database> -c 'psql code;'      # Allows you to run psql code for a desired database
+    Blah
 ```
 
-## Inside Postgres Connection
-Some commands to reference when inside the psql connect.
+## Database (PostgreSQL)
 
-**Remember to add ';' to the end of your commands or they will not register!**
+### Implementation
 
 ```
-postgres=# \conninfo                    # See your connection info
-postgres=# \list                        # List the databases
-postgres=# \dt                          # List all tables in current database
-postgres=# \du                          # List all users
-postgres=# \c <name of database>        # Connect to a new database
-postgres=# \password <username>         # Change password of selected user
-postgres=# \q                           # Exit psql connection
+    Blah
+```
+
+## Horizontal Scalability
+
+### Implementation
+
+```
+    Blah
 ```
