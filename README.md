@@ -39,7 +39,7 @@ Add the following to your .env file:
 
 ** Note that in order to utilize ```Redis``` for multiple app servers, you will need a load balancer. See [below](#initialize-redis) for more details.
 
-### Obtain the Repository and Install Dependencies
+## Obtain the Repository and Install Dependencies
 ```
 Clone the repository:
 
@@ -80,7 +80,7 @@ Install Dependencies:
 * Only necessary if you want to run multiple node.js applciations
 ```
 
-### Initialize Database
+## Initialize Database
 
 We have a script to initialize a postgres server very quickly.
 
@@ -98,7 +98,7 @@ Breakdown:
     - create a table called canvas_data
 ```
 
-### Initialize Redis
+## Initialize Redis
 
 Only complete this step if you want to use **multiple nodes** and have a method for **load balancing**!!!
 
@@ -116,7 +116,7 @@ Install Redis:
 
 ```
 
-### Usage
+## Usage
 
 Time to get our app server working.
 
