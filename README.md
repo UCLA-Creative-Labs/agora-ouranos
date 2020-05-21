@@ -8,8 +8,8 @@ For extensive documentation and implementation, checkout our [```wiki```](https:
 
 [Implmentation Overview](#Implmentation-Overview)  
 [Getting Started](#Getting-Started)  
-&nbsp;&nbsp;[Local](#local)  
-&nbsp;&nbsp;[Oracle Cloud Infrastructure](#Oracle-Cloud-Infrastructure)  
+&nbsp;&nbsp;&nbsp;&nbsp;[Local](#local)  
+&nbsp;&nbsp;&nbsp;&nbsp;[Oracle Cloud Infrastructure](#Oracle-Cloud-Infrastructure)  
 
 # Implementation Overview
 
