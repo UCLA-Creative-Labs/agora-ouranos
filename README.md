@@ -6,6 +6,11 @@ This repository is dedicated to the backend architecture of ```Agora``` which we
 
 For extensive documentation and implementation, checkout our [```wiki```](https://github.com/UCLA-Creative-Labs/agora-ouranos/wiki).
 
+[Implmentation Overview](#Implmentation-Overview)  
+[Getting Started](#Getting-Started)  
+    [Local](##Local)  
+    [Oracle Cloud Infrastructure](##Oracle-Cloud-Infrastructure)  
+
 # Implementation Overview
 
 At a glance, our backend is implemented as follows:
