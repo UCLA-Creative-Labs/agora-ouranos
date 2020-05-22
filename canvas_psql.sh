@@ -29,4 +29,4 @@ username="opc"
 #Execute few psql commands: 
 #Note: you can also add -h hostname -U username in the below commands.
 
-psql -d $database -h localhost -U $username -c "CREATE TABLE canvas-data (time_stamp TIMESTAMPTZ, data JSON);"
+psql -d $database -h localhost -U $username -c "CREATE TABLE canvas_data (time_stamp TIMESTAMPTZ, data JSON);"
