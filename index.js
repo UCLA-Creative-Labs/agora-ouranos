@@ -16,7 +16,7 @@ let client_pool = new Map();
 var buffer_time_sec = 10;
 var buffer_time     = buffer_time_sec * 1000; 
 
-var draw_limit_sec  = 10;
+var draw_limit_sec  = 20;
 var draw_limit      = draw_limit_sec * 1000;
 
 console.log(draw_limit);
