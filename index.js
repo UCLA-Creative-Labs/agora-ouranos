@@ -19,8 +19,6 @@ var buffer_time     = buffer_time_sec * 1000;
 var draw_limit_sec  = 20;
 var draw_limit      = draw_limit_sec * 1000;
 
-console.log(draw_limit);
-
 const send_handshake = (socket) =>{
   client_pool.set(socket.handshake.address, {'last_send': Date.now(), 'can_undo': true});
   socket.emit('handshake', client_pool.get(socket.handshake.address))
