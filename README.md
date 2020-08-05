@@ -1,187 +1,140 @@
-# PEN REST API
+# Agora - Ouranos (Backend Implementation)
 
-PEN stack to demo a REST API for web applications. REST API means ```REpresentational State Transfer``` and is an architectual style for designing web applications that require networking between client and application servers. A RESTful design allows for a separation between client and server and is visible, reliable and scalable. 
+In ancient Greek, the word **```agora```** means a public open space for gathering. In a day in age where COVID-19 has prohibited physical gatherings, we, at Creative Labs, have created a platform for individuals to gather around: **```Agora```**. **```Agora```** is a collaborative canvas centered around community. We built it so that every individual can only contribute one stroke at a time with the hope that people would come together to build something amazing. 
 
-**Postgres**    -   Open-source relational database management system (RDBMS). https://www.postgresql.org/
+This repository is dedicated to the backend architecture of **```Agora```** which we dubbed after the sky titan **Ouranos**. Much like how the sky is an integral part of our lives that we all take for granted, our backend models a similar ideology. As the father of titans and the husband of Gaia (frontend), **Ouranos** was a fitting name to encompass the entirety of our backend.
 
-**Express.js**  -   Web application framework for Node.js. https://expressjs.com/
+For extensive ***documentation*** and ***implementation***, checkout our [```wiki```](https://github.com/UCLA-Creative-Labs/agora-ouranos/wiki).
 
-**Node.js**     -   Open-source, JavaScript runtime environment that executes code outside of a browser https://nodejs.org/en/
+To see how to deploy on [```Oracle Cloud Infrastructure```](https://www.oracle.com/cloud/), checkout this [```wiki page```](https://github.com/UCLA-Creative-Labs/agora-ouranos/wiki/Deploying-to-Oracle-Cloud-Infrastructure)
 
-We will take advantage of a module called ```node-postgres``` to have our ```node.js``` application easily interface with our Postgres server.
 
-# Set Up
+# Getting Started - Locally
 
-Unfortunately, OCI instances come with empty images that have no installed tools in it. OCI base images are essentially CentOS and use RPM to download modules. Whenever you need to download things always use the command ```sudo yum install -y <name of package>```.
+Our backend is hoisted completely with [```Oracle Cloud Infrastructure```](https://www.oracle.com/cloud/). Through our process we weren't able to find the best documentation on how to implement our backend infrastructure. Hopefully, the following guide will be able to help you run ```Ouranos``` locally.
 
-## Installing Git and Obtaining this Repository
+We recommend using some sort of cloud infrastructure to view the full power of horizontal scalability. However, if you just want to get started the following guide might be a good place to start to understand sockets and postgres. 
 
-This git repo has the base template for quickly building up a 
+We utilize a ```.env``` file for security reasons and recommend you follow the same protocol. 
 
 ```
-Install git:
+Put the .env file in your root directory for your project
 
-    sudo yum install -y git
+    cd agora-ouranos
+    touch .env
 
+Add the following to your .env file:
+
+    DB_USER=<YOUR USERNAME HERE>        // by default our script, canvas_psql.sh, sets this to 'opc'
+    DB_PWD=<YOUR PASSWORD HERE>
+    DB_HOST=<PUBLIC IP OF DB HERE>      // if running locally then 127.0.0.1
+    DB_NAME=canvas-db
+    DB_PORT=5432                        // if unspecified postgres automatically ports to 5432
+
+    REDIS_HOST=<PUBLIC IP HERE>         // if unbound, this is just the public IP or 127.0.0.1
+    REDIS_PORT=6379                     // if unspecified redis automatically ports to 6379
+    REDIS_PWD=<YOUR PASSWORD HERE>
+
+```
+
+** Note that in order to utilize ```Redis``` for multiple app servers, you will need a load balancer. See [below](#initialize-redis) for more details.
+
+## Obtain the Repository and Install Dependencies
+```
 Clone the repository:
 
-    git clone https://github.com/UCLA-Creative-Labs/node-psql-rest.git
+    git clone https://github.com/UCLA-Creative-Labs/agora-ouranos.git
+    cd agora-ouranos
 
+
+Dependencies:
+
+    Node.js
+    yarn
+    PostgreSQL
+    Redis*
+
+Install Dependencies:
+
+    # Downloads NVM (for node.js)
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+
+    # Downloads YARN
+    curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | sudo tee /etc/yum.repos.d/yarn.repo
+    sudo rpm --import https://dl.yarnpkg.com/rpm/pubkey.gpg
+
+    # Sourcing the bash intializing script to export nvm to $PATH	
+    source ~/.bashrc	
+
+    # Switch to the correct node version	
+    # Run node --version or npm --version to ensure its not 8.1	
+    nvm install node	
+
+    # Installs to node modules 	
+    # express   => node.js framework	
+    # postgres  => easily interface with postgres server	
+    # nodemon   => watch changes to your node.js applications and update them
+    # socket.io => connecting to client
+    yarn install
+    
+* Only necessary if you want to run multiple node.js applciations
 ```
 
-## Installing Dependencies and Requirements
-
-We have a script to download all the stuff you need.
-
-### Run
-
-```
-Install Dependencies, nvm, and open the firewall for port 3000:
-
-    bash start.sh
-```
-
-### Breakdown
-
-- update yum
-- download nvm (node version manager)
-    - use this to switch between node versions
-    - run ```nvm install <node version number>``` for a specific version
-    - run ```nvm use <node version number>``` to switch node version
-    - run ```node --version``` to check
-- download yarn
-- install requirements 
-- install node dependencies
-- allow port access to 3000
-
-Extensive documenation in ```start.sh```.
-
-## Initializing Postgres Database 
+## Initialize Database
 
 We have a script to initialize a postgres server very quickly.
 
-### Run
+```
+Intialize postgres database:
+
+    bash canvas_psql.sh
+
+Breakdown:
+    - init postgres
+    - start postgres
+    - create a user (call it 'opc' or whatever you want to use in .env file)
+    - set password for user (user currently is defaulted to ```opc``` but change it in the canvas_psql file to match .env)
+    - create a database (call it canvas-db)
+    - create a table called canvas_data
+```
+
+## Initialize Redis
+
+Only complete this step if you want to use **multiple nodes** and have a method for **load balancing**!!!
+
+To load balance locally, follow this [guide](https://blog.jscrambler.com/scaling-node-js-socket-server-with-nginx-and-redis/).
 
 ```
-Initialize postgres database:
+Install Redis:
 
-    bash psql.sh
+    sudo yum install redis -y               // yum is for CentOS and RHEL operating systems
+    sudo systemctl start redis.service
+    sudo systemctl enable redis
+
+    sudo systemctl status redis.service     // check the status for you redis service
+    redis-cli ping                          // you should get the output 'PONG'
 ```
 
-### Breakdown
+## Usage
 
-- init postgres
-- start postgres
-- create a user (call it 'opc' or whatever you want to use in ```queries.js```)
-- create a database (call it 'api' or whatever you want to use in ```queries.js```)
-- set password for user (user currently is defaulted to ```opc``` with a default password of ```test``` in ```queries.js```)
-- create a table called ```users``` 
-- populate ```users``` table with our bois Jerry and George
-
-Extensive documenation in ```psql.sh```.
-
-## Changing Postgres Authentication Method
-
-Default authentication method is ```ident``` which requires an ident server to authenticate the user. Instead we switch to ```md5``` which is simply a hashed password authentication.
-
-### Run the following code
-
-```
-First enter root user to access pqsl configuration file:
-
-    sudo -i
-    cd /var/lib/pgsql/data/
-    vim pg_hba.conf
-
-Replace the following with this:
-
-    # TYPE  DATABASE        USER            ADDRESS                 METHOD
-
-    # "local" is for Unix domain socket connections only
-    local   all             all                                     peer
-    # IPv4 local connections:
-    #host    all             all             127.0.0.1/32            ident
-    host    all             all             127.0.0.1/32            md5
-    # IPv6 local connections:
-    #host    all             all             ::1/128                 ident
-    host    all             all             ::1/128                 md5
-
-Finally run this outside of root user:
-
-    psql -d <database_name> -c "SELECT pg_reload_conf();"
-```
-# Usage
-
-Time to get this bad boi working. We have some base code here to show you how to navigate a RESTful API but the main benefits is to simply just download all the dependencies required to start.
+Time to get our app server working.
 
 The following documentation is to show you how to start up a server and prove that it works.
 
 ```
 Start your node.js development server:
 
-    npm start
+    yarn start
 
-Go to your VM instance's public ip address at specificied port in ```start.sh```. (Default is 3000)
+Check out your localhost to see if app server is listening at port 3000:
 
-    http://pub.lic.ip.add:3000/
-
-You should see something like this:
-
-    {
-        info: "Node.js, Express, and Postgres API"
-    }
-```
-```
-Now simulate a GET request, go to:
-
-    http://pub.lic.ip.add:3000/users
+    http://127.0.0.1:3000/
 
 You should see something like this:
 
-    [
-        {
-            "id": 1,
-            "name": "Jerry",
-            "email": "jerry@example.com"
-        },
-        {
-            "id": 2,
-            "name": "George",
-            "email": "george@example.com"
-        }
-    ]
-```
-Congrats! You know have a backend server!
+    Cannot /GET
 
-# Helpful Postgres Commands
-
-Some commands to help you navigate the postgres server.
-
-Link to cheatsheet: https://gist.github.com/Kartones/dd3ff5ec5ea238d4c546
-
-## Terminal Commands
-Some commands you can access in the terminal if bash is more of your cup of tea.
-
-```
-sudo -u postgres createuser --interactive       # Allows you to create a new user
-sudo -u postgres createdb api                   # Creates a database with your current user
-
-psql -d <name of database> -U <name of user>    # Allows you do start a psql connection to a database with specific user
-psql <database>                                 # Allows you to login with current user in config to <database>
-psql -d <name of database> -c 'psql code;'      # Allows you to run psql code for a desired database
+Since we are using sockets, it makes sense that there is no '/GET' at the base of localhost:3000.
 ```
 
-## Inside Postgres Connection
-Some commands to reference when inside the psql connect.
-
-**Remember to add ';' to the end of your commands or they will not register!**
-
-```
-postgres=# \conninfo                    # See your connection info
-postgres=# \list                        # List the databases
-postgres=# \dt                          # List all tables in current database
-postgres=# \du                          # List all users
-postgres=# \c <name of database>        # Connect to a new database
-postgres=# \password <username>         # Change password of selected user
-postgres=# \q                           # Exit psql connection
-```
+Congrats, you just spun up ```Ouranos``` locally!

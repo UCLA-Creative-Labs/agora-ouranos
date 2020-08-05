@@ -1,5 +1,13 @@
+# Instance/Computer Specific Files
 .vscode/
 node_modules/
-
+.DS_Store
 *.swp
+
+# Security 
 .env
+.ssh/
+
+# Ignore stdout and sterr logging
+*.log
+*.err
