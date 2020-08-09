@@ -10,7 +10,7 @@ const pool = new Pool({
 })
 
 const getData = (socket, timestamp) => {
-    const timestampsec = Math.floor(timestamp / 1000);
+    const timestampsec = Math.floor(timestamp / 1000) || 0;
     const query = 'SELECT data FROM canvas_data WHERE time_stamp > to_timestamp('
                     + timestampsec
                     + ') ORDER BY time_stamp ASC';
