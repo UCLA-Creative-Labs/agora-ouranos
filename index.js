@@ -31,8 +31,6 @@ io.on("connection", (socket) => {
   if(dev_reset)                     // FOR DEV RESETS ONLY
     socket.emit('reset', null);
 
-  console.log(draw_limit_sec);
-
   socket.emit('limit', draw_limit);
 
   if(!client_pool.get(socket.handshake.address)){      // If current IP address has NOT been seen before
@@ -42,9 +40,9 @@ io.on("connection", (socket) => {
   client_count += 1;
   console.log("New client connected. Current connection count: " + client_count);
 
-    socket.on('init', (timestamp) => {
-        db.getData(socket, timestamp);
-    });
+  socket.on('init', (timestamp) => {
+      db.getData(socket, timestamp);
+  });
 
   socket.on("update", (data) => {
     send_handshake(socket)

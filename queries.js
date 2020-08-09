@@ -17,12 +17,12 @@ const getData = (socket, timestamp) => {
 
   pool.query(query, (error, results) => {
     if (error) {
-      throw error
+      throw error;
     }
-    /** @type {any[]} */
-    let res = []
+
+    let res = [];
     for(let i = 0; i < results.rows.length; i++){
-      res.push(results.rows[i].data)
+      res.push(results.rows[i].data);
     }
     socket.emit('package', res);
   })
@@ -40,7 +40,7 @@ const pushData = (client_pool, data, socket) => {
     client_pool.get(socket.handshake.address).can_undo = false;
     pool.query('INSERT INTO canvas_data VALUES (now(), $1)',[data], (error, results) => {
       if (error) {
-        throw error
+        throw error;
       }
       socket.broadcast.emit('stroke', data);
         socket.emit('disableundo', true);
