@@ -2,8 +2,12 @@ const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
 const db = require('./queries.js');
+
+const args = process.argv.slice(2);
+const NAME = args[0];
+const PORT = args[1];
 require('dotenv').config();
-const port = 3000;
+
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
@@ -27,7 +31,6 @@ const send_handshake = (socket) =>{
 let dev_reset = false;
 
 io.on("connection", (socket) => {
-  
   if(dev_reset)                     // FOR DEV RESETS ONLY
     socket.emit('reset', null);
 
@@ -38,7 +41,7 @@ io.on("connection", (socket) => {
   }
   socket.emit('handshake', client_pool.get(socket.handshake.address))
   client_count += 1;
-  console.log("New client connected. Current connection count: " + client_count);
+  console.log(`${new Date()}: New connection, count: ${client_count}`);
 
   socket.on('init', (timestamp) => {
       db.getData(socket, timestamp);
@@ -64,10 +67,9 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     client_count -= 1;
-    console.log("Client disconnected Current connection count: " + client_count);
+    console.log(`${new Date()}: Client disconnected, count: ${client_count}`);
   });
 });
 
-
-server.listen(port, () => console.log(`Listening on port ${port}`));
+server.listen(PORT, () => console.log(`${NAME} => Listening on port ${PORT}`));
 

@@ -17,8 +17,10 @@ function destroy(){
 
 function deploy(){
   curr_dir=$(pwd)
+  NAME=$1
+  PORT=$2
   cd ~/agora-ouranos
-  nohup node index.js > ~/ouranos.log 2> ~/ouranos.err &
+  nohup node index.js $NAME $PORT > logs/$NAME.log 2> logs/$NAME.err &
   cd $curr_dir
 }
 
