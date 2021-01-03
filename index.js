@@ -10,7 +10,13 @@ require('dotenv').config();
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server, {
+  cors: {
+    origin: [ 'http://localhost:8080', /.*\.creativelabsucla\.com$/],
+    methods: [ 'GET', 'POST' ],
+    credentials: true,
+  },
+});
 var redis = require('socket.io-redis');
 io.adapter(redis({host: process.env.REDIS_HOST, port: process.env.REDIS_PORT, auth_pass: process.env.REDIS_PWD}))
 
@@ -28,7 +34,7 @@ const send_handshake = (socket) =>{
   socket.emit('handshake', client_pool.get(socket.handshake.address))
 };
 
-let dev_reset = false;
+let dev_reset = true;
 
 io.on("connection", (socket) => {
   if(dev_reset)                     // FOR DEV RESETS ONLY
