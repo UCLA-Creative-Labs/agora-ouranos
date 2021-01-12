@@ -42,7 +42,7 @@ io.on("connection", (socket) => {
 
   socket.emit('limit', draw_limit);
 
-  if(dev_reset || !client_pool.get(socket.handshake.address)){      // If current IP address has NOT been seen before
+  if(!client_pool.get(socket.handshake.address)){      // If current IP address has NOT been seen before
     client_pool.set(socket.handshake.address, {'last_send': null, 'can_undo': false});
   }
   socket.emit('handshake', client_pool.get(socket.handshake.address))
